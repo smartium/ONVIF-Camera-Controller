@@ -13,7 +13,8 @@
     "jquery-mousewheel": "^3.1.13",
     "meteor-node-stubs": "^1.0.1",
     "midi": "^1.0.4",
-    "onvif-nvt": "^0.3.2"
+    "onvif-nvt": "^0.3.2",
+    "osc-receiver": "^1.1.3"
   },
   "meteor": {
     "mainModule": {
