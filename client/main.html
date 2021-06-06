@@ -1,15 +1,35 @@
 <head>
-  <title>onvif-mtr</title>
+    <title>onvif-mtr</title>
 </head>
 
 <body>
-  <h1>SMARTIUM labs!</h1>
-  <h2>ONVIF Controller</h2>
-
-  {{> controller}}
+    <!-- <h1>SMARTIUM labs!</h1>
+    <h2>ONVIF Controller</h2> -->
+    {{> controller}} {{> generalInfo}} {{> stage}}
 </body>
 
 <template name="controller">
-  <button id="gotoHome">GO TO HOME</button>
-  <button id="gotoLeft">GO TO LEFT</button>
+<div class="controller">
+<button id="gotoHome">GO TO HOME</button>
+  <button id="gotoLeft">GO TO LEFT (10%)</button>
+  <button id="gotoRight">GO TO RIGHT (10%)</button>
+<button id="gotoUp">GO TO UP (10%)</button>
+<button id="gotoDown">GO TO DOWN (10%)</button>
+  <button id="getInfo">GET INFO</button>
+<big> <strong>ZOOM: {{zoom}}</strong> </big>
+</div>
+</template>
+
+<template name="stage">
+<div id="stage" class="stage">click on this area</div>
+</template>
+
+<template name='generalInfo'>
+<div class="info">
+<ul>
+<li>Manufacturer: {{ camInfo.Manufacturer }}</li>
+<li>Model: {{ camInfo.Model }}</li>
+<li>Firmware: {{ camInfo.FirmwareVersion }}</li>
+</ul>
+</div>
 </template>

@@ -2,50 +2,95 @@ import { Meteor } from 'meteor/meteor';
 
 const OnvifManager = require('onvif-nvt')
 
+var camInfo = 'CAMERA INFORMATION...'
+
 Meteor.startup(() => {
-  OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
-    .then(results => {
-      let camera = results
-      if (camera.ptz) { // PTZ is supported on this device
-        camera.ptz.gotoHomePosition(null)
-      }
-      else {
-        console.log('NO ONVIF');
-      }
-    })
+    OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
+        .then(results => {
+            let camera = results
+            if (camera.ptz) { // PTZ is supported on this device
+                camera.ptz.gotoHomePosition(null)
+                camInfo = camera.getInformation()
+                camera.ptz.getStatus(null, (err, res) => {
+
+
+                })
+            } else {
+                console.log('NO ONVIF');
+            }
+        })
+
+    Meteor.setInterval(() => {
+        // Meteor.call('getStatus')
+    }, 3000)
 });
 
 Meteor.methods({
-  'gotoHome'() {
-    OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
-    .then(results => {
-      let camera = results
-      if (camera.ptz) { // PTZ is supported on this device
-        camera.ptz.gotoHomePosition(null)
-      }
-      else {
-        console.log('NO ONVIF');
-      }
-    })
-  },
-  'gotoLeft'() {
-    OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
-      .then(results => {
-        let camera = results
-        if (camera.ptz) { // PTZ is supported on this device
-          let velocity = { x: 0.5, y: 0 }
-          camera.ptz.continuousMove(null, velocity)
-            .then(() => {
-              setTimeout(() => {
-              }, 5000) // stop the camera after 5 seconds
-            })
+    'getInfo' () {
+        return camInfo
+    },
 
-        }
-        else {
-          console.log('NO ONVIF');
-        }
-      })
-  }
+    'getStatus' () {
+        OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
+            .then(results => {
+                let camera = results
+                if (camera.ptz) { // PTZ is supported on this device
+                    camera.ptz.getStatus(null, (err, res) => {
+                        console.log(res.data.GetStatusResponse.PTZStatus.Position);
+                    })
+                } else {
+                    console.log('NO ONVIF');
+                }
+            })
+    },
+    'gotoHome' () {
+        OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
+            .then(results => {
+                let camera = results
+                if (camera.ptz) { // PTZ is supported on this device
+                    camera.ptz.gotoHomePosition(null)
+                } else {
+                    console.log('NO ONVIF');
+                }
+            })
+    },
+
+    'ptzMove' (pan, tilt, zoom) {
+        OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
+            .then(results => {
+                let camera = results
+                if (camera.ptz) { // PTZ is supported on this device
+                    let velocity = { x: pan, y: tilt }
+                    camera.ptz.absoluteMove(null, velocity)
+                        .then(() => {
+                            setTimeout(() => {
+                                    // camera.ptz.stop()
+                                }, 300) // stop the camera after 5 seconds
+                        })
+
+                } else {
+                    console.log('NO ONVIF');
+                }
+            })
+    },
+
+    'ptzZoom' (zoom) {
+        OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
+            .then(results => {
+                let camera = results
+                if (camera.ptz) { // PTZ is supported on this device
+                    let velocity = { x: 0, y: 0, z: zoom }
+                    camera.ptz.relativeMove(null, velocity)
+                        .then(() => {
+                            setTimeout(() => {
+                                    // camera.ptz.stop()
+                                }, 300) // stop the camera after 5 seconds
+                        })
+                } else {
+                    console.log('NO ONVIF');
+                }
+            })
+    }
 })
 
 

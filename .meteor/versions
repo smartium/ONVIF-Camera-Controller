@@ -38,6 +38,7 @@ inter-process-messaging@0.1.1
 jquery@3.0.0
 keypress:keypress@2.1.0
 launch-screen@1.2.1
+less@3.0.1
 livedata@1.0.18
 logging@1.2.0
 meteor@1.9.3
