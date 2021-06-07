@@ -91,15 +91,16 @@ Template.stage.events({
         console.log('B = ' + (e.pageX - posX) + ' , ' + (e.pageY - posY));
         rangeX = [0, 640];
         valueX = (e.pageX - posX);
-        normalX = norm(valueX, rangeX[0], rangeX[1]);
+        normalX = flanNormal(valueX, rangeX[0], rangeX[1]);
         rangeY = [360, 0];
         valueY = (e.pageY - posY);
-        normalY = norm(valueY, rangeY[0], rangeY[1]);
+        normalY = flanNormal(valueY, rangeY[0], rangeY[1]);
         Meteor.call('ptzMove', normalX / 4.3, normalY / 2.42, 0)
     }
 })
 
-function norm(B, Y, X) {
-    A = ((2 * B - 2 * Y) - (X - Y)) / (X - Y)
-    return A;
+function flanNormal(position, min, max) {
+    // Equation by Prof. Francisco Lancellote
+    result = ((2 * position - 2 * min) - (max - min)) / (max - min)
+    return result;
 }
