@@ -4,6 +4,25 @@ const OnvifManager = require('onvif-nvt')
 
 var camInfo = 'CAMERA INFORMATION...'
 
+
+// OSC RECEIVER
+var OscReceiver = require('osc-receiver');
+var receiver = new OscReceiver();
+receiver.bind(8000);
+receiver.on('/foo', function(a, b, c) {
+    // do something.
+});
+receiver.on('/bar', function(x, y) {
+    // do something.
+});
+receiver.on('message', function() {
+    // handle all messages
+    var address = arguments[0];
+    var args = Array.prototype.slice.call(arguments, 1);
+    console.log(address, args);
+});
+// #OSC RECEIVER
+
 Meteor.startup(() => {
     OnvifManager.connect('192.168.5.166', 2000, 'admin', 'admin')
         .then(results => {
@@ -11,10 +30,7 @@ Meteor.startup(() => {
             if (camera.ptz) { // PTZ is supported on this device
                 camera.ptz.gotoHomePosition(null)
                 camInfo = camera.getInformation()
-                camera.ptz.getStatus(null, (err, res) => {
-
-
-                })
+                camera.ptz.getStatus(null, (err, res) => {})
             } else {
                 console.log('NO ONVIF');
             }
